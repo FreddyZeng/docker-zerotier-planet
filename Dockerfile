@@ -19,7 +19,7 @@ RUN set -x\
 RUN set -x\
     && curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y\
     && source "$HOME/.cargo/env"\
-    && git clone https://github.com/zerotier/ZeroTierOne.git\
+    && git clone https://github.com/FreddyZeng/ZeroTierOne-1.14.2.git ZeroTierOne\
     && cd ZeroTierOne\
     && git checkout ${TAG}\
     && echo "切换到tag:${TAG}"\
