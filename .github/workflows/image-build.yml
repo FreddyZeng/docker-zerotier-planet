@@ -17,6 +17,7 @@ jobs:
 
       - name: Build Docker image
         run: |
+          echo "FILE_DATE=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_ENV
           docker build \
             --network host \
             --tag zerotier-planet-build:latest \
