@@ -18,12 +18,12 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-    - name: build
-      run: |
-        df -hT $PWD
-        docker —network=host build \
-        --tag zerotier-planet-build:latest \
-        --build-arg TAG=main \ .
+      - name: build
+        run: |
+             df -hT $PWD
+             docker —network=host build \
+             --tag zerotier-planet-build:latest \
+             --build-arg TAG=main \ .
           
           
           
