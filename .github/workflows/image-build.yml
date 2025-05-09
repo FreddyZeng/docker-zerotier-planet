@@ -26,12 +26,12 @@ jobs:
       - name: Save Docker image
         run: |
           docker save zerotier-planet-build:latest \
-            | gzip > $HOME/zerotier-planet-build.tar.gz
+            | gzip > $GITHUB_WORKSPACE/zerotier-planet-build.tar.gz
 
       - name: Upload Docker image artifact
         uses: actions/upload-artifact@master
         if: ${{ ! cancelled() }}
         with:
           name: ${{ env.DEVICE }}--${{ env.FILE_DATE }}zerotier-planet-build.tar.gz
-          path: $HOME/zerotier-planet-build.tar.gz
+          path: zerotier-planet-build.tar.gz
 
