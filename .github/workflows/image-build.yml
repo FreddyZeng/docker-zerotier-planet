@@ -29,8 +29,9 @@ jobs:
             | gzip > $HOME/zerotier-planet-build.tar.gz
 
       - name: Upload Docker image artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@master
+	if: !cancelled()
         with:
-          name: zerotier-planet-build
+          name:  ${{ env.DEVICE }}--${{ env.FILE_DATE }}zerotier-planet-build.tar.gz
           path: $HOME/zerotier-planet-build.tar.gz
 
