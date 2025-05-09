@@ -9,21 +9,28 @@ on:
   workflow_dispatch:      # 允许手动触发
 
 jobs:
-  check-and-build:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
       - name: Build Docker image
         run: |
-          df -hT $PWD
           docker build \
             --network host \
             --tag zerotier-planet-build:latest \
             --build-arg TAG=main \
             .
+
+      - name: Save Docker image
+        run: |
+          docker save zerotier-planet-build:latest \
+            | gzip > $HOME/zerotier-planet-build.tar.gz
+
+      - name: Upload Docker image artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: zerotier-planet-build
+          path: $HOME/zerotier-planet-build.tar.gz
 
