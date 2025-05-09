@@ -33,6 +33,6 @@ jobs:
         uses: actions/upload-artifact@master
         if: ${{ ! cancelled() }}
         with:
-          name: ${{ env.DEVICE }}--${{ env.FILE_DATE }}zerotier-planet-build.tar.gz
+          name: ${{ env.FILE_DATE }}zerotier-planet-build.tar.gz
           path: zerotier-planet-build.tar.gz
 
