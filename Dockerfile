@@ -1,13 +1,70 @@
+FROM alpine:3.14 AS builder-libzmq
+LABEL maintainer="ZeroMQ Project <zeromq@imatix.com>"
+ARG DEBIAN_FRONTEND=noninteractive
+
+ENV CFLAGS="-O2 -Wno-error"
+ENV CXXFLAGS="-O2 -Wno-error"
+
+RUN apk update && apk add --no-cache \
+    autoconf \
+    automake \
+    git \
+    krb5-dev \
+    libsodium-dev \
+    libtool \
+    pkgconfig
+    
+RUN apk add --no-cache \
+       git python3 npm make g++ linux-headers curl pkgconfig openssl-dev jq \
+       build-base musl-dev
+    
+WORKDIR /opt
+
+RUN git clone --branch current https://github.com/FreddyZeng/libzmq.git
+
+WORKDIR /opt/libzmq
+
+RUN ./autogen.sh
+
+RUN ./configure CFLAGS="-O2 -Wno-error" CXXFLAGS="-O2 -Wno-error" \
+    --prefix=/usr/local --with-libsodium --with-libgssapi_krb5 --disable-shared --enable-static
+
+RUN make
+
+RUN make check
+
+RUN make install
+
+
 FROM alpine:3.14 as builder
 
 ENV TZ=Asia/Shanghai
 ARG TAG=main
 ENV TAG=${TAG}
 
+RUN apk update && apk add --no-cache \
+    autoconf \
+    automake \
+    git \
+    krb5-dev \
+    libsodium-dev \
+    libtool \
+    pkgconfig
+    
+RUN apk add --no-cache \
+       git python3 npm make g++ linux-headers curl pkgconfig openssl-dev jq \
+       build-base musl-dev
+
+COPY --from=builder-libzmq /usr/local /usr/local
+
 WORKDIR /app
 ADD ./patch/entrypoint.sh /app/entrypoint.sh
 ADD ./patch/http_server.js /app/http_server.js
 ADD ./patch/mkworld_custom.cpp /app/patch/mkworld_custom.cpp
+
+RUN apk add --no-cache \
+       git python3 npm make g++ linux-headers curl pkgconfig openssl-dev jq \
+       build-base musl-dev
 
 # init tool
 RUN set -x && apk update \
@@ -76,6 +133,12 @@ COPY --from=builder /var/lib/zerotier-one /bak/zerotier-one
 COPY --from=builder /app/ZeroTierOne/zerotier-one /usr/sbin/zerotier-one
 COPY --from=builder /app/entrypoint.sh /app/entrypoint.sh
 COPY --from=builder /app/http_server.js /app/http_server.js
+
+RUN set -x && apk update && apk add --no-cache \
+    krb5-libs \
+    libsodium
+    
+COPY --from=builder-libzmq /usr/local /usr/local
 
 RUN set -x \
     && apk update \
