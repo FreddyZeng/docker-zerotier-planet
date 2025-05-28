@@ -1,41 +1,3 @@
-FROM alpine:3.14 AS builder-libzmq
-LABEL maintainer="ZeroMQ Project <zeromq@imatix.com>"
-ARG DEBIAN_FRONTEND=noninteractive
-
-ENV CFLAGS="-O2 -Wno-error"
-ENV CXXFLAGS="-O2 -Wno-error"
-
-RUN apk update && apk add --no-cache \
-    autoconf \
-    automake \
-    git \
-    krb5-dev \
-    libsodium-dev \
-    libtool \
-    pkgconfig
-    
-RUN apk add --no-cache \
-       git python3 npm make g++ linux-headers curl pkgconfig openssl-dev jq \
-       build-base musl-dev
-    
-WORKDIR /opt
-
-RUN git clone --branch current https://github.com/FreddyZeng/libzmq.git
-
-WORKDIR /opt/libzmq
-
-RUN ./autogen.sh
-
-RUN ./configure CFLAGS="-O2 -Wno-error" CXXFLAGS="-O2 -Wno-error" \
-    --prefix=/usr/local --with-libsodium --with-libgssapi_krb5 --disable-shared --enable-static
-
-RUN make
-
-RUN make check
-
-RUN make install
-
-
 FROM alpine:3.14 as builder
 
 ENV TZ=Asia/Shanghai
@@ -54,8 +16,24 @@ RUN apk update && apk add --no-cache \
 RUN apk add --no-cache \
        git python3 npm make g++ linux-headers curl pkgconfig openssl-dev jq \
        build-base musl-dev
+       
+WORKDIR /opt
 
-COPY --from=builder-libzmq /usr/local /usr/local
+RUN git clone --branch current https://github.com/FreddyZeng/libzmq.git
+
+WORKDIR /opt/libzmq
+
+RUN ./autogen.sh
+
+RUN ./configure CFLAGS="-O2 -Wno-error" CXXFLAGS="-O2 -Wno-error" \
+    --prefix=/usr/local --with-libsodium --with-libgssapi_krb5
+
+RUN make
+
+RUN make check
+
+RUN make install
+
 
 WORKDIR /app
 ADD ./patch/entrypoint.sh /app/entrypoint.sh
