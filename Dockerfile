@@ -1,5 +1,6 @@
 FROM alpine:3.14 as builder
 
+ENV LD_LIBRARY_PATH=/usr/local/lib
 ENV TZ=Asia/Shanghai
 ARG TAG=main
 ENV TAG=${TAG}
