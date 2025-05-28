@@ -116,7 +116,7 @@ RUN set -x && apk update && apk add --no-cache \
     krb5-libs \
     libsodium
     
-COPY --from=builder-libzmq /usr/local /usr/local
+COPY --from=builder /usr/local /usr/local
 
 RUN set -x \
     && apk update \
