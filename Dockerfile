@@ -1,4 +1,4 @@
-FROM alpine:3.14 as builder
+FROM alpine:3.16 as builder
 
 ENV LD_LIBRARY_PATH=/usr/local/lib
 ENV TZ=Asia/Shanghai
@@ -91,7 +91,7 @@ RUN set -x \
     && npm install -g node-gyp\
     && npm install 
 
-FROM alpine:3.14
+FROM alpine:3.16
 
 WORKDIR /app
 
