@@ -16,7 +16,7 @@ RUN apk update && apk add --no-cache \
     
 RUN apk add --no-cache \
        git python3 npm make g++ linux-headers curl pkgconfig openssl-dev jq \
-       build-base musl-dev
+       build-base musl-dev msgpack-cxx-dev boost-dev
        
 WORKDIR /opt
 
@@ -115,7 +115,7 @@ COPY --from=builder /app/http_server.js /app/http_server.js
 
 RUN set -x && apk update && apk add --no-cache \
     krb5-libs \
-    libsodium
+    libsodium msgpack-cxx boost-libs
     
 COPY --from=builder /usr/local /usr/local
 
