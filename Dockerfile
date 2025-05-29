@@ -28,7 +28,7 @@ WORKDIR /opt
 RUN git clone https://github.com/msgpack/msgpack-c.git
 WORKDIR /opt/msgpack-c
 RUN git checkout cpp_master
-RUN cmake -DMSGPACK_CXX17=ON .
+RUN cmake -DBUILD_SHARED_LIBS=ON .
 RUN cmake --build . --target install
 
 RUN ls /usr/local/include
