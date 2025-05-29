@@ -1,4 +1,4 @@
-FROM alpine:3.16 as builder
+FROM alpine:3.14 as builder
 
 ENV LD_LIBRARY_PATH=/usr/local/lib
 ENV TZ=Asia/Shanghai
@@ -16,9 +16,16 @@ RUN apk update && apk add --no-cache \
     
 RUN apk add --no-cache \
        git python3 npm make g++ linux-headers curl pkgconfig openssl-dev jq \
-       build-base musl-dev msgpack-cxx-dev boost-dev
+       build-base musl-dev
+
        
 WORKDIR /opt
+
+RUN git clone https://github.com/msgpack/msgpack-c.git
+WORKDIR /opt/msgpack-c
+RUN git checkout cpp_master
+RUN cmake -DMSGPACK_CXX17=ON .
+RUN cmake --build . --target install
 
 RUN git clone --branch current https://github.com/FreddyZeng/libzmq.git
 
@@ -91,7 +98,7 @@ RUN set -x \
     && npm install -g node-gyp\
     && npm install 
 
-FROM alpine:3.16
+FROM alpine:3.14
 
 WORKDIR /app
 
@@ -115,7 +122,7 @@ COPY --from=builder /app/http_server.js /app/http_server.js
 
 RUN set -x && apk update && apk add --no-cache \
     krb5-libs \
-    libsodium msgpack-cxx boost-libs
+    libsodium
     
 COPY --from=builder /usr/local /usr/local
 
