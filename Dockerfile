@@ -12,11 +12,15 @@ RUN apk update && apk add --no-cache \
     krb5-dev \
     libsodium-dev \
     libtool \
-    pkgconfig
+    pkgconfig boost-dev
     
-RUN apk add --no-cache \
+       
+# init tool
+RUN set -x && apk update \
+    && apk add --no-cache \
        git python3 npm make g++ linux-headers curl pkgconfig openssl-dev jq \
-       build-base musl-dev cmake
+       build-base musl-dev \
+    && echo "env prepare success!"
 
        
 WORKDIR /opt
@@ -43,21 +47,12 @@ RUN make check
 RUN make install
 
 
+
 WORKDIR /app
 ADD ./patch/entrypoint.sh /app/entrypoint.sh
 ADD ./patch/http_server.js /app/http_server.js
 ADD ./patch/mkworld_custom.cpp /app/patch/mkworld_custom.cpp
 
-RUN apk add --no-cache \
-       git python3 npm make g++ linux-headers curl pkgconfig openssl-dev jq \
-       build-base musl-dev
-
-# init tool
-RUN set -x && apk update \
-    && apk add --no-cache \
-       git python3 npm make g++ linux-headers curl pkgconfig openssl-dev jq \
-       build-base musl-dev \
-    && echo "env prepare success!"
 
 # make zerotier-one
 RUN set -x\
@@ -122,7 +117,7 @@ COPY --from=builder /app/http_server.js /app/http_server.js
 
 RUN set -x && apk update && apk add --no-cache \
     krb5-libs \
-    libsodium
+    libsodium boost-dev
     
 COPY --from=builder /usr/local /usr/local
 
