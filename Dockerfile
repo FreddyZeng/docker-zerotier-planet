@@ -28,7 +28,7 @@ WORKDIR /opt
 RUN git clone https://github.com/msgpack/msgpack-c.git
 WORKDIR /opt/msgpack-c
 RUN git checkout cpp_master
-RUN cmake -DBUILD_SHARED_LIBS=ON .
+RUN cmake .
 RUN cmake --build . --target install
 
 RUN ls /usr/local/include
@@ -115,7 +115,6 @@ ENV ZT_PORT=9994
 ENV API_PORT=3443
 ENV FILE_SERVER_PORT=3000
 
-ENV GH_MIRROR="https://mirror.ghproxy.com/"
 ENV FILE_KEY=''
 ENV TZ=Asia/Shanghai
 
@@ -128,7 +127,7 @@ COPY --from=builder /app/http_server.js /app/http_server.js
 
 RUN set -x && apk update && apk add --no-cache \
     krb5-libs \
-    libsodium boost-dev
+    libsodium
     
 COPY --from=builder /usr/local /usr/local
 
