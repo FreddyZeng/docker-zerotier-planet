@@ -16,7 +16,7 @@ RUN apk update && apk add --no-cache \
     
 RUN apk add --no-cache \
        git python3 npm make g++ linux-headers curl pkgconfig openssl-dev jq \
-       build-base musl-dev
+       build-base musl-dev cmake
 
        
 WORKDIR /opt
