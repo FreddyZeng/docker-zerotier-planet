@@ -35,6 +35,8 @@ RUN git clone --branch current https://github.com/FreddyZeng/libzmq.git
 
 WORKDIR /opt/libzmq
 
+RUN pwd;ls -al
+
 RUN ./autogen.sh
 
 RUN ./configure CFLAGS="-O2 -Wno-error" CXXFLAGS="-O2 -Wno-error" \
