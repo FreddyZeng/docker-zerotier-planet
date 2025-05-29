@@ -31,6 +31,10 @@ RUN git checkout cpp_master
 RUN cmake -DMSGPACK_CXX17=ON .
 RUN cmake --build . --target install
 
+RUN ls /usr/local/include
+
+RUN ls /usr/local/lib
+
 WORKDIR /opt
 
 RUN git clone --branch current https://github.com/FreddyZeng/libzmq.git
@@ -50,6 +54,9 @@ RUN make check
 
 RUN make install
 
+RUN ls /usr/local/include
+
+RUN ls /usr/local/lib
 
 
 WORKDIR /app
