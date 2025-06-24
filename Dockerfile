@@ -69,7 +69,7 @@ ADD ./patch/mkworld_custom.cpp /app/patch/mkworld_custom.cpp
 RUN set -x\
     && curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y\
     && source "$HOME/.cargo/env"\
-    && git clone https://github.com/FreddyZeng/ZeroTierOne-1.14.2.git ZeroTierOne\
+    && git clone -b client https://github.com/FreddyZeng/ZeroTierOne-1.14.2.git ZeroTierOne\
     && cd ZeroTierOne\
 #    && git checkout ${TAG}\
 #    && echo "切换到tag:${TAG}"\
